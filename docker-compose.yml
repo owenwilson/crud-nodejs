@@ -1,0 +1,35 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: mysql_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: crud_db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: crudexample
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  node-app:
+    image: crud-nodejs:1.0.0
+    container_name: node_crud_app
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      DB_HOST: db 
+      DB_USER: user
+      DB_PASSWORD: crudexample
+      DB_NAME: crud_db
+      DB_PORT: 3306
+    depends_on:
+      - db
+    volumes:
+      - ./:/usr/src/app
+      - /usr/src/app/node_modules
+
+volumes:
+  mysql_data:
